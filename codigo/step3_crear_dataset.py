@@ -7,10 +7,11 @@ Este script crea una clase VideoDataset que:
 3. Aplica transformaciones (resize, normalización)
 4. Retorna tensores listos para el modelo
 
-OPTIMIZADO PARA CPU:
-- Usa solo 8 frames por video (en vez de 32)
-- Resolución 112x112 (en vez de 224x224)
-- Sin data augmentation pesado
+OPTIMIZADO PARA CPU Y GPU:
+- Configuración automática de paralelismo (num_workers)
+- Usa 8 frames por video (configurable)
+- Resolución 112x112 (configurable)
+- Data augmentation para entrenamiento
 
 Ejecutar: python step3_crear_dataset.py
 """
@@ -221,7 +222,7 @@ def crear_dataloaders(
     batch_size=8,  # Optimizado para GPU
     num_frames=8,  # Pocos frames para eficiencia
     frame_size=(112, 112),  # Resolución baja para velocidad
-    num_workers=0  # Sin multiprocesamiento para Colab (evita overhead)
+    device=None  # Detectar automáticamente el dispositivo
 ):
     """
     Crea los DataLoaders para train, val y test
@@ -230,8 +231,8 @@ def crear_dataloaders(
     -----------
     batch_size : int
         Tamaño del batch (optimizado para GPU, default: 8)
-    num_workers : int
-        Número de procesos para cargar datos (default: 4 para GPU)
+    device : torch.device or None
+        Dispositivo para determinar num_workers (None para autodetección)
         
     Returns:
     --------
@@ -240,6 +241,27 @@ def crear_dataloaders(
     print("="*60)
     print("🔄 Creando DataLoaders...")
     print("="*60)
+    
+    # Detectar dispositivo si no se proporciona
+    if device is None:
+        device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+    
+    # Configurar num_workers basado en el dispositivo
+    if device.type == 'cuda':
+        # Para GPU: usar pocos workers para evitar bottleneck
+        num_workers = min(4, torch.cuda.device_count() * 2) if torch.cuda.is_available() else 2
+        pin_memory = True
+        print(f"🚀 Configuración GPU detectada - Usando {num_workers} workers")
+    else:
+        # Para CPU: usar más workers para paralelismo
+        import multiprocessing
+        num_workers = min(8, multiprocessing.cpu_count() // 2)
+        pin_memory = False
+        print(f"💻 Configuración CPU detectada - Usando {num_workers} workers para paralelismo")
+    
+    print(f"   Device: {device}")
+    print(f"   Num workers: {num_workers}")
+    print(f"   Pin memory: {pin_memory}")
     
     # Crear datasets
     print("\n📊 TRAIN:")
@@ -275,7 +297,7 @@ def crear_dataloaders(
         batch_size=batch_size,
         shuffle=True,
         num_workers=num_workers,
-        pin_memory=True  # Optimizado para GPU
+        pin_memory=pin_memory
     )
     
     val_loader = DataLoader(
@@ -283,7 +305,7 @@ def crear_dataloaders(
         batch_size=batch_size,
         shuffle=False,
         num_workers=num_workers,
-        pin_memory=True  # Optimizado para GPU
+        pin_memory=pin_memory
     )
     
     test_loader = DataLoader(
@@ -291,7 +313,7 @@ def crear_dataloaders(
         batch_size=batch_size,
         shuffle=False,
         num_workers=num_workers,
-        pin_memory=True  # Optimizado para GPU
+        pin_memory=pin_memory
     )
     
     print("\n" + "="*60)
@@ -317,11 +339,15 @@ def test_dataloader():
     print("🧪 PRUEBA DEL DATALOADER")
     print("="*60)
     
+    # Detectar dispositivo
+    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+    
     # Crear dataloaders
     train_loader, val_loader, test_loader = crear_dataloaders(
         batch_size=2,
         num_frames=8,
-        frame_size=(112, 112)
+        frame_size=(112, 112),
+        device=device
     )
     
     # Cargar mapeo de clases

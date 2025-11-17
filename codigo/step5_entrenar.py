@@ -7,13 +7,17 @@ CARACTERÍSTICAS:
 - Early stopping para evitar overfitting
 - Guardado de checkpoints
 - Visualización de métricas en tiempo real
-- Optimizado para GPU (usa CPU como fallback)
+- Optimizado para GPU y CPU (paralelismo automático)
 
 OPTIMIZACIONES PARA GPU:
 - Batch size optimizado para GPU T4
 - Gradients accumulation para batches grandes
 - Mixed precision si es soportado
 - Checkpointing frecuente
+
+OPTIMIZACIONES PARA CPU:
+- Paralelismo automático con num_workers
+- Configuración adaptativa según núcleos disponibles
 
 Ejecutar:
 python step5_entrenar.py --model lightweight --epochs 30 --batch_size 8
@@ -393,7 +397,7 @@ def main():
         batch_size=args.batch_size,
         num_frames=args.num_frames,
         frame_size=(args.frame_size, args.frame_size),
-        num_workers=0  # Optimizado para Colab (sin multiprocesamiento)
+        device=device  # Pasar dispositivo para configuración automática de paralelismo
     )
     
     # Crear modelo
