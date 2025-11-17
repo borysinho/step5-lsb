@@ -114,6 +114,11 @@ class Entrenador:
             frames = frames.to(self.device)
             labels = labels.to(self.device)
             
+            # Debug: verificar devices
+            if batch_idx == 0:
+                print(f"🔍 Debug - Frames device: {frames.device}, Labels device: {labels.device}")
+                print(f"🔍 Debug - Model device: {next(self.model.parameters()).device}")
+            
             # Forward pass
             self.optimizer.zero_grad()
             outputs = self.model(frames)
