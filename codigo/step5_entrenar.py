@@ -345,6 +345,12 @@ def main():
     
     # Device
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+    if device.type == 'cuda':
+        print("🚀 ENTRENANDO CON GPU - ¡Esto será mucho más rápido!")
+        print(f"   GPU: {torch.cuda.get_device_name(0)}")
+        print(f"   Memoria GPU: {torch.cuda.get_device_properties(0).total_memory / 1024**3:.1f} GB")
+    else:
+        print("💻 ENTRENANDO CON CPU - Puede tomar más tiempo...")
     print(f"   Device: {device}")
     
     # Cargar número de clases
