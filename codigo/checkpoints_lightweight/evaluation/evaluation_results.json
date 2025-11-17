@@ -1,0 +1,363 @@
+{
+  "model_path": "checkpoints_lightweight/best_model.pth",
+  "accuracy": 37.91469194312796,
+  "top5_accuracy": 77.25118483412322,
+  "num_samples": 211,
+  "class_accuracies": [
+    {
+      "class": "ABECEDARIO",
+      "accuracy": 100.0,
+      "count": 5
+    },
+    {
+      "class": "CALENDARIO",
+      "accuracy": 100.0,
+      "count": 2
+    },
+    {
+      "class": "CUMPLEAÑOS",
+      "accuracy": 100.0,
+      "count": 4
+    },
+    {
+      "class": "DIÁLOGO II",
+      "accuracy": 100.0,
+      "count": 4
+    },
+    {
+      "class": "FAMILIA",
+      "accuracy": 100.0,
+      "count": 2
+    },
+    {
+      "class": "FAMILIA II",
+      "accuracy": 100.0,
+      "count": 3
+    },
+    {
+      "class": "LUGARES II",
+      "accuracy": 100.0,
+      "count": 3
+    },
+    {
+      "class": "MEDIOS DE TRANSPORTE",
+      "accuracy": 100.0,
+      "count": 2
+    },
+    {
+      "class": "NATURALEZA",
+      "accuracy": 100.0,
+      "count": 3
+    },
+    {
+      "class": "NÚMEROS 1 AL 50",
+      "accuracy": 100.0,
+      "count": 5
+    },
+    {
+      "class": "OPUESTOS",
+      "accuracy": 100.0,
+      "count": 5
+    },
+    {
+      "class": "PALABRAS GENERALES II",
+      "accuracy": 100.0,
+      "count": 4
+    },
+    {
+      "class": "POLÍTICA II",
+      "accuracy": 100.0,
+      "count": 8
+    },
+    {
+      "class": "RESTAURANTE",
+      "accuracy": 100.0,
+      "count": 3
+    },
+    {
+      "class": "TIEMPO III",
+      "accuracy": 100.0,
+      "count": 3
+    },
+    {
+      "class": "VERBOS",
+      "accuracy": 100.0,
+      "count": 4
+    },
+    {
+      "class": "VERBOS III",
+      "accuracy": 100.0,
+      "count": 2
+    },
+    {
+      "class": "VERBOS II",
+      "accuracy": 80.0,
+      "count": 5
+    },
+    {
+      "class": "GENERAL I",
+      "accuracy": 75.0,
+      "count": 4
+    },
+    {
+      "class": "POLÍTICA",
+      "accuracy": 75.0,
+      "count": 4
+    },
+    {
+      "class": "SALUD II",
+      "accuracy": 75.0,
+      "count": 4
+    },
+    {
+      "class": "ANIMALES",
+      "accuracy": 66.66666666666666,
+      "count": 3
+    },
+    {
+      "class": "SUSTANTIVOS III",
+      "accuracy": 50.0,
+      "count": 2
+    },
+    {
+      "class": "DIÁLOGO",
+      "accuracy": 33.33333333333333,
+      "count": 3
+    },
+    {
+      "class": "SUSTANTIVOS",
+      "accuracy": 20.0,
+      "count": 5
+    },
+    {
+      "class": "ADVERBIOS DE LUGAR",
+      "accuracy": 0.0,
+      "count": 2
+    },
+    {
+      "class": "ALIMENTOS",
+      "accuracy": 0.0,
+      "count": 2
+    },
+    {
+      "class": "ANIMALES II",
+      "accuracy": 0.0,
+      "count": 3
+    },
+    {
+      "class": "ANIMALES III",
+      "accuracy": 0.0,
+      "count": 3
+    },
+    {
+      "class": "BEBIDAS",
+      "accuracy": 0.0,
+      "count": 3
+    },
+    {
+      "class": "COCINA",
+      "accuracy": 0.0,
+      "count": 3
+    },
+    {
+      "class": "COLORES",
+      "accuracy": 0.0,
+      "count": 2
+    },
+    {
+      "class": "COLORES II",
+      "accuracy": 0.0,
+      "count": 2
+    },
+    {
+      "class": "COSAS DE ALIMENTOS",
+      "accuracy": 0.0,
+      "count": 3
+    },
+    {
+      "class": "COSAS DE ANIMALES",
+      "accuracy": 0.0,
+      "count": 2
+    },
+    {
+      "class": "CUERPO HUMANO",
+      "accuracy": 0.0,
+      "count": 2
+    },
+    {
+      "class": "DEPARTAMENTOS DE BOLIVIA",
+      "accuracy": 0.0,
+      "count": 1
+    },
+    {
+      "class": "DEPORTES",
+      "accuracy": 0.0,
+      "count": 3
+    },
+    {
+      "class": "EDUCACIÓN",
+      "accuracy": 0.0,
+      "count": 2
+    },
+    {
+      "class": "ESCUELA",
+      "accuracy": 0.0,
+      "count": 4
+    },
+    {
+      "class": "ESCUELA II",
+      "accuracy": 0.0,
+      "count": 4
+    },
+    {
+      "class": "ESTADO CIVIL",
+      "accuracy": 0.0,
+      "count": 2
+    },
+    {
+      "class": "FRUTAS II",
+      "accuracy": 0.0,
+      "count": 1
+    },
+    {
+      "class": "HOGAR",
+      "accuracy": 0.0,
+      "count": 3
+    },
+    {
+      "class": "HOGAR II",
+      "accuracy": 0.0,
+      "count": 3
+    },
+    {
+      "class": "INSECTOS",
+      "accuracy": 0.0,
+      "count": 2
+    },
+    {
+      "class": "LUGARES",
+      "accuracy": 0.0,
+      "count": 2
+    },
+    {
+      "class": "LUGARES TURÍSTICOS",
+      "accuracy": 0.0,
+      "count": 2
+    },
+    {
+      "class": "NATURALEZA II",
+      "accuracy": 0.0,
+      "count": 3
+    },
+    {
+      "class": "NÚMEROS",
+      "accuracy": 0.0,
+      "count": 2
+    },
+    {
+      "class": "NÚMEROS II",
+      "accuracy": 0.0,
+      "count": 3
+    },
+    {
+      "class": "NÚMEROS IV",
+      "accuracy": 0.0,
+      "count": 3
+    },
+    {
+      "class": "OPUESTOS II",
+      "accuracy": 0.0,
+      "count": 2
+    },
+    {
+      "class": "OPUESTOS III",
+      "accuracy": 0.0,
+      "count": 4
+    },
+    {
+      "class": "PAÍSES",
+      "accuracy": 0.0,
+      "count": 2
+    },
+    {
+      "class": "PAÍSES II",
+      "accuracy": 0.0,
+      "count": 4
+    },
+    {
+      "class": "PERSONAS",
+      "accuracy": 0.0,
+      "count": 3
+    },
+    {
+      "class": "PREGUNTAS",
+      "accuracy": 0.0,
+      "count": 1
+    },
+    {
+      "class": "PRENDAS DE VESTIR",
+      "accuracy": 0.0,
+      "count": 3
+    },
+    {
+      "class": "PRENDAS DE VESTIR II",
+      "accuracy": 0.0,
+      "count": 2
+    },
+    {
+      "class": "PRONOMBRES",
+      "accuracy": 0.0,
+      "count": 2
+    },
+    {
+      "class": "SALUD",
+      "accuracy": 0.0,
+      "count": 4
+    },
+    {
+      "class": "SALUD SEXUAL Y REPRODUCTIVA",
+      "accuracy": 0.0,
+      "count": 3
+    },
+    {
+      "class": "SALUDOS",
+      "accuracy": 0.0,
+      "count": 3
+    },
+    {
+      "class": "SUSTANTIVOS IV",
+      "accuracy": 0.0,
+      "count": 3
+    },
+    {
+      "class": "TIEMPO",
+      "accuracy": 0.0,
+      "count": 2
+    },
+    {
+      "class": "TIEMPO II",
+      "accuracy": 0.0,
+      "count": 2
+    },
+    {
+      "class": "TRABAJO",
+      "accuracy": 0.0,
+      "count": 3
+    },
+    {
+      "class": "VERBOS IV",
+      "accuracy": 0.0,
+      "count": 4
+    },
+    {
+      "class": "VERDURAS II",
+      "accuracy": 0.0,
+      "count": 2
+    },
+    {
+      "class": "ÁREAS DE CONOCIMIENTO",
+      "accuracy": 0.0,
+      "count": 3
+    }
+  ]
+}

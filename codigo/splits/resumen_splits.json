@@ -1,0 +1,21 @@
+{
+  "total_videos": 1406,
+  "num_classes": 71,
+  "train": {
+    "num_videos": 984,
+    "porcentaje": 69.98577524893315,
+    "videos_por_clase": {
+      "min": 7,
+      "max": 36,
+      "mean": 13.859154929577464
+    }
+  },
+  "val": {
+    "num_videos": 211,
+    "porcentaje": 15.007112375533428
+  },
+  "test": {
+    "num_videos": 211,
+    "porcentaje": 15.007112375533428
+  }
+}
