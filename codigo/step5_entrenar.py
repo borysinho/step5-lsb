@@ -326,8 +326,8 @@ def main():
                        help='Tipo de modelo a usar')
     parser.add_argument('--epochs', type=int, default=30,
                        help='Número de épocas')
-    parser.add_argument('--batch_size', type=int, default=4,
-                       help='Tamaño del batch')
+    parser.add_argument('--batch_size', type=int, default=8,
+                       help='Tamaño del batch (8 recomendado para GPU)')
     parser.add_argument('--lr', type=float, default=0.001,
                        help='Learning rate')
     parser.add_argument('--patience', type=int, default=5,
