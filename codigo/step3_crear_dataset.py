@@ -175,10 +175,10 @@ def crear_dataloaders(
     val_csv='./splits/val.csv',
     test_csv='./splits/test.csv',
     video_root='../videos',  # Corregido: la ruta correcta desde 'codigo'
-    batch_size=4,  # Pequeño para CPU
-    num_frames=8,  # Pocos frames para CPU
-    frame_size=(112, 112),  # Resolución baja para CPU
-    num_workers=2  # Pocos workers para CPU
+    batch_size=8,  # Optimizado para GPU
+    num_frames=8,  # Pocos frames para eficiencia
+    frame_size=(112, 112),  # Resolución baja para velocidad
+    num_workers=4  # Más workers para GPU
 ):
     """
     Crea los DataLoaders para train, val y test
@@ -186,9 +186,9 @@ def crear_dataloaders(
     Parameters:
     -----------
     batch_size : int
-        Tamaño del batch (pequeño para CPU, default: 4)
+        Tamaño del batch (optimizado para GPU, default: 8)
     num_workers : int
-        Número de procesos para cargar datos (default: 2 para CPU)
+        Número de procesos para cargar datos (default: 4 para GPU)
         
     Returns:
     --------
@@ -232,7 +232,7 @@ def crear_dataloaders(
         batch_size=batch_size,
         shuffle=True,
         num_workers=num_workers,
-        pin_memory=False  # No necesario para CPU
+        pin_memory=True  # Optimizado para GPU
     )
     
     val_loader = DataLoader(
@@ -240,7 +240,7 @@ def crear_dataloaders(
         batch_size=batch_size,
         shuffle=False,
         num_workers=num_workers,
-        pin_memory=False
+        pin_memory=True  # Optimizado para GPU
     )
     
     test_loader = DataLoader(
@@ -248,7 +248,7 @@ def crear_dataloaders(
         batch_size=batch_size,
         shuffle=False,
         num_workers=num_workers,
-        pin_memory=False
+        pin_memory=True  # Optimizado para GPU
     )
     
     print("\n" + "="*60)
@@ -316,7 +316,7 @@ def test_dataloader():
     print("\n🎯 PRÓXIMO PASO:")
     print("   Ejecuta: python step4_crear_modelo.py")
     print("\n💡 NOTA:")
-    print("   El DataLoader está optimizado para CPU.")
+    print("   El DataLoader está optimizado para GPU.")
     print("   Si tienes GPU disponible, puedes aumentar:")
     print("   - batch_size (de 4 a 16-32)")
     print("   - num_frames (de 8 a 16-32)")
