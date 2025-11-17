@@ -26,6 +26,7 @@ import torch
 import torch.nn as nn
 import torch.optim as optim
 from torch.utils.data import DataLoader
+from torch.cuda.amp import autocast, GradScaler
 import json
 import time
 from pathlib import Path
@@ -53,7 +54,8 @@ class Entrenador:
         lr=0.001,
         num_epochs=30,
         patience=5,
-        save_dir='./checkpoints'
+        save_dir='./checkpoints',
+        use_mixed_precision=True
     ):
         self.model = model.to(device)
         self.train_loader = train_loader
@@ -63,10 +65,14 @@ class Entrenador:
         self.patience = patience
         self.save_dir = Path(save_dir)
         self.save_dir.mkdir(exist_ok=True)
+        self.use_mixed_precision = use_mixed_precision and torch.cuda.is_available()
         
         # Criterio y optimizador
         self.criterion = nn.CrossEntropyLoss()
         self.optimizer = optim.Adam(model.parameters(), lr=lr)
+        
+        # Mixed precision scaler
+        self.scaler = GradScaler() if self.use_mixed_precision else None
         
         # Learning rate scheduler (reduce on plateau)
         self.scheduler = optim.lr_scheduler.ReduceLROnPlateau(
@@ -92,6 +98,7 @@ class Entrenador:
         
         print(f"\n🎯 Entrenador inicializado:")
         print(f"   Device: {device}")
+        print(f"   Mixed Precision: {'Activado (FP16)' if self.use_mixed_precision else 'Desactivado'}")
         print(f"   Learning rate: {lr}")
         print(f"   Épocas: {num_epochs}")
         print(f"   Patience: {patience}")
@@ -121,14 +128,23 @@ class Entrenador:
                 print(f"🔍 Debug - Frames shape: {frames.shape}, dtype: {frames.dtype}")
                 print(f"🔍 Debug - Memory allocated: {torch.cuda.memory_allocated()/1024**2:.1f} MB")
             
-            # Forward pass
+            # Forward pass con mixed precision
             self.optimizer.zero_grad()
-            outputs = self.model(frames)
-            loss = self.criterion(outputs, labels)
             
-            # Backward pass
-            loss.backward()
-            self.optimizer.step()
+            if self.use_mixed_precision:
+                with autocast():
+                    outputs = self.model(frames)
+                    loss = self.criterion(outputs, labels)
+                
+                # Backward pass con scaler
+                self.scaler.scale(loss).backward()
+                self.scaler.step(self.optimizer)
+                self.scaler.update()
+            else:
+                outputs = self.model(frames)
+                loss = self.criterion(outputs, labels)
+                loss.backward()
+                self.optimizer.step()
             
             # Estadísticas
             running_loss += loss.item()
@@ -372,7 +388,9 @@ def main():
         batch_size=args.batch_size,
         num_frames=args.num_frames,
         frame_size=(args.frame_size, args.frame_size),
-        num_workers=0  # Optimizado para Colab (sin multiprocesamiento)
+        num_workers=0,  # Optimizado para Colab (sin multiprocesamiento)
+        prefetch_factor=2,  # Prefetch para GPU
+        persistent_workers=False
     )
     
     # Crear modelo
