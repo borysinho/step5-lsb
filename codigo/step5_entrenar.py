@@ -388,9 +388,7 @@ def main():
         batch_size=args.batch_size,
         num_frames=args.num_frames,
         frame_size=(args.frame_size, args.frame_size),
-        num_workers=0,  # Optimizado para Colab (sin multiprocesamiento)
-        prefetch_factor=2,  # Prefetch para GPU
-        persistent_workers=False
+        num_workers=0  # Optimizado para Colab (sin multiprocesamiento)
     )
     
     # Crear modelo
