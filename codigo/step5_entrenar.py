@@ -7,19 +7,19 @@ CARACTERÍSTICAS:
 - Early stopping para evitar overfitting
 - Guardado de checkpoints
 - Visualización de métricas en tiempo real
-- Optimizado para CPU
+- Optimizado para GPU (usa CPU como fallback)
 
-OPTIMIZACIONES PARA CPU:
-- Batch size pequeño (2-4)
-- Gradients accumulation (simula batches grandes)
-- Mixed precision desactivado (no ayuda en CPU)
+OPTIMIZACIONES PARA GPU:
+- Batch size optimizado para GPU T4
+- Gradients accumulation para batches grandes
+- Mixed precision si es soportado
 - Checkpointing frecuente
 
 Ejecutar:
-python step5_entrenar.py --model lightweight --epochs 30 --batch_size 4
+python step5_entrenar.py --model lightweight --epochs 30 --batch_size 8
 
 o para R(2+1)D:
-python step5_entrenar.py --model r2plus1d --epochs 20 --batch_size 2
+python step5_entrenar.py --model r2plus1d --epochs 20 --batch_size 4
 """
 
 import torch
@@ -344,7 +344,7 @@ def main():
     print(f"   Patience: {args.patience}")
     
     # Device
-    device = torch.device('cpu')
+    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     print(f"   Device: {device}")
     
     # Cargar número de clases
