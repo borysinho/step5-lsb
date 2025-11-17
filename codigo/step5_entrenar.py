@@ -114,10 +114,12 @@ class Entrenador:
             frames = frames.to(self.device)
             labels = labels.to(self.device)
             
-            # Debug: verificar devices
+            # Debug: verificar devices (solo primera iteración)
             if batch_idx == 0:
                 print(f"🔍 Debug - Frames device: {frames.device}, Labels device: {labels.device}")
                 print(f"🔍 Debug - Model device: {next(self.model.parameters()).device}")
+                print(f"🔍 Debug - Frames shape: {frames.shape}, dtype: {frames.dtype}")
+                print(f"🔍 Debug - Memory allocated: {torch.cuda.memory_allocated()/1024**2:.1f} MB")
             
             # Forward pass
             self.optimizer.zero_grad()
