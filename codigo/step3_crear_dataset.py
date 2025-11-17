@@ -178,7 +178,7 @@ def crear_dataloaders(
     batch_size=8,  # Optimizado para GPU
     num_frames=8,  # Pocos frames para eficiencia
     frame_size=(112, 112),  # Resolución baja para velocidad
-    num_workers=4  # Más workers para GPU
+    num_workers=0  # Sin multiprocesamiento para Colab (evita overhead)
 ):
     """
     Crea los DataLoaders para train, val y test
