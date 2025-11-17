@@ -104,79 +104,106 @@ class SignLanguageClassifier(nn.Module):
         return self.model(x)
 
 
-class LightweightCNN3D(nn.Module):
+class ImprovedLightweightCNN3D(nn.Module):
     """
-    Modelo 3D CNN ULTRA LIGERO desde cero
-    
-    Usa menos capas y filtros que arquitecturas estándar.
-    Ideal para CPU y datasets pequeños como el nuestro.
-    
-    ⚠️  USO RECOMENDADO:
-    - Solo si R(2+1)D es muy lento en tu CPU
-    - Para experimentación rápida
-    - Accuracy será menor que R(2+1)D
+    Modelo mejorado con más capacidad y regularización
     """
-    
-    def __init__(self, num_classes=71, dropout=0.5):
-        super(LightweightCNN3D, self).__init__()
-        
-        print(f"🏗️  Construyendo modelo LIGERO...")
-        print(f"   Arquitectura: Custom 3D CNN (ultra ligero)")
+
+    def __init__(self, num_classes=71, dropout=0.3):
+        super(ImprovedLightweightCNN3D, self).__init__()
+
+        print(f"🏗️  Construyendo modelo MEJORADO...")
+        print(f"   Arquitectura: 3D CNN Mejorada")
         print(f"   Número de clases: {num_classes}")
-        
-        # Bloque 1: 3 -> 16 filtros
-        self.conv1 = nn.Conv3d(3, 16, kernel_size=(3, 3, 3), padding=(1, 1, 1))
-        self.bn1 = nn.BatchNorm3d(16)
+
+        # Bloque 1: 3 -> 32 filtros (más capacidad)
+        self.conv1 = nn.Conv3d(3, 32, kernel_size=(3, 3, 3), padding=(1, 1, 1))
+        self.bn1 = nn.BatchNorm3d(32)
         self.pool1 = nn.MaxPool3d(kernel_size=(1, 2, 2))
-        
-        # Bloque 2: 16 -> 32 filtros
-        self.conv2 = nn.Conv3d(16, 32, kernel_size=(3, 3, 3), padding=(1, 1, 1))
-        self.bn2 = nn.BatchNorm3d(32)
+
+        # Bloque 2: 32 -> 64 filtros
+        self.conv2 = nn.Conv3d(32, 64, kernel_size=(3, 3, 3), padding=(1, 1, 1))
+        self.bn2 = nn.BatchNorm3d(64)
         self.pool2 = nn.MaxPool3d(kernel_size=(2, 2, 2))
-        
-        # Bloque 3: 32 -> 64 filtros
-        self.conv3 = nn.Conv3d(32, 64, kernel_size=(3, 3, 3), padding=(1, 1, 1))
-        self.bn3 = nn.BatchNorm3d(64)
+
+        # Bloque 3: 64 -> 128 filtros (agregado)
+        self.conv3 = nn.Conv3d(64, 128, kernel_size=(3, 3, 3), padding=(1, 1, 1))
+        self.bn3 = nn.BatchNorm3d(128)
         self.pool3 = nn.MaxPool3d(kernel_size=(2, 2, 2))
-        
-        # Global average pooling
-        self.global_pool = nn.AdaptiveAvgPool3d((1, 1, 1))
-        
-        # Clasificador
+
+        # Bloque 4: 128 -> 256 filtros (agregado)
+        self.conv4 = nn.Conv3d(128, 256, kernel_size=(3, 3, 3), padding=(1, 1, 1))
+        self.bn4 = nn.BatchNorm3d(256)
+        self.pool4 = nn.AdaptiveAvgPool3d((1, 1, 1))
+
+        # Clasificador mejorado
         self.classifier = nn.Sequential(
             nn.Flatten(),
             nn.Dropout(dropout),
-            nn.Linear(64, 128),
+            nn.Linear(256, 512),
             nn.ReLU(),
+            nn.BatchNorm1d(512),
             nn.Dropout(dropout),
-            nn.Linear(128, num_classes)
+            nn.Linear(512, 256),
+            nn.ReLU(),
+            nn.BatchNorm1d(256),
+            nn.Dropout(dropout),
+            nn.Linear(256, num_classes)
         )
-        
+
         self.num_classes = num_classes
-        
+
+        # Inicialización de pesos
+        self._initialize_weights()
+
         # Contar parámetros
         total_params = sum(p.numel() for p in self.parameters())
         print(f"\n📊 Estadísticas del modelo:")
         print(f"   Total de parámetros: {total_params:,}")
         print(f"   Tamaño aprox: {total_params * 4 / 1024 / 1024:.1f} MB")
-    
+
+    def _initialize_weights(self):
+        """Inicialización mejorada de pesos"""
+        for m in self.modules():
+            if isinstance(m, nn.Conv3d):
+                nn.init.kaiming_normal_(m.weight, mode='fan_out', nonlinearity='relu')
+                if m.bias is not None:
+                    nn.init.constant_(m.bias, 0)
+            elif isinstance(m, nn.BatchNorm3d):
+                nn.init.constant_(m.weight, 1)
+                nn.init.constant_(m.bias, 0)
+            elif isinstance(m, nn.Linear):
+                nn.init.normal_(m.weight, 0, 0.01)
+                nn.init.constant_(m.bias, 0)
+
     def forward(self, x):
-        """
-        Forward pass
-        
-        x: (batch, 3, frames, height, width)
-        """
         # Bloque 1
         x = self.conv1(x)
         x = self.bn1(x)
         x = torch.relu(x)
         x = self.pool1(x)
-        
+
         # Bloque 2
         x = self.conv2(x)
         x = self.bn2(x)
         x = torch.relu(x)
         x = self.pool2(x)
+
+        # Bloque 3 (nuevo)
+        x = self.conv3(x)
+        x = self.bn3(x)
+        x = torch.relu(x)
+        x = self.pool3(x)
+
+        # Bloque 4 (nuevo)
+        x = self.conv4(x)
+        x = self.bn4(x)
+        x = torch.relu(x)
+        x = self.pool4(x)
+
+        # Clasificador
+        x = self.classifier(x)
+        return x
         
         # Bloque 3
         x = self.conv3(x)
@@ -217,7 +244,7 @@ def crear_modelo(model_type='r2plus1d', num_classes=71, pretrained=False):
             pretrained=pretrained
         )
     elif model_type == 'lightweight':
-        return LightweightCNN3D(num_classes=num_classes)
+        return ImprovedLightweightCNN3D(num_classes=num_classes)
     else:
         raise ValueError(f"Tipo de modelo desconocido: {model_type}")
 

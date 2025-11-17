@@ -51,9 +51,9 @@ class Entrenador:
         train_loader,
         val_loader,
         device,
-        lr=0.001,
+        lr=0.001,  # Reducido para estabilidad
         num_epochs=30,
-        patience=5,
+        patience=7,  # Más paciencia
         save_dir='./checkpoints',
         use_mixed_precision=True
     ):
@@ -67,19 +67,24 @@ class Entrenador:
         self.save_dir.mkdir(exist_ok=True)
         self.use_mixed_precision = use_mixed_precision and torch.cuda.is_available()
         
-        # Criterio y optimizador
-        self.criterion = nn.CrossEntropyLoss()
-        self.optimizer = optim.Adam(model.parameters(), lr=lr)
+        # Criterio y optimizador mejorado
+        self.criterion = nn.CrossEntropyLoss(label_smoothing=0.1)  # Label smoothing
+        self.optimizer = optim.AdamW(
+            model.parameters(), 
+            lr=lr, 
+            weight_decay=1e-4,  # L2 regularization
+            betas=(0.9, 0.999)
+        )
         
         # Mixed precision scaler
         self.scaler = GradScaler() if self.use_mixed_precision else None
         
-        # Learning rate scheduler (reduce on plateau)
-        self.scheduler = optim.lr_scheduler.ReduceLROnPlateau(
+        # Learning rate scheduler mejorado
+        self.scheduler = optim.lr_scheduler.CosineAnnealingWarmRestarts(
             self.optimizer,
-            mode='max',  # Maximizar accuracy
-            factor=0.5,
-            patience=3
+            T_0=10,  # Restart every 10 epochs
+            T_mult=2,  # Double the cycle length after each restart
+            eta_min=1e-6  # Minimum learning rate
         )
         
         # Historial de entrenamiento

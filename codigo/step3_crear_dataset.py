@@ -86,10 +86,22 @@ class VideoDataset(Dataset):
         
         # Cargar frames del video
         frames = self._load_video(video_path)
-        
-        # Aplicar transformaciones si existen
-        if self.transform:
-            frames = self.transform(frames)
+
+        # Aplicar data augmentation si está en modo entrenamiento
+        if self.is_train:
+            frames = self._apply_data_augmentation(frames)
+
+        return frames, label
+        if self.is_train:
+            self.transform = transforms.Compose([
+                # Data augmentation para training
+                transforms.RandomHorizontalFlip(p=0.5),
+                transforms.RandomRotation(degrees=15),
+                transforms.ColorJitter(brightness=0.2, contrast=0.2, saturation=0.2),
+                transforms.RandomAffine(degrees=0, translate=(0.1, 0.1), scale=(0.9, 1.1)),
+            ])
+        else:
+            self.transform = None
         
         return frames, label
     
@@ -162,7 +174,38 @@ class VideoDataset(Dataset):
         
         return frames
     
-    def get_class_name(self, label_idx):
+    def _apply_data_augmentation(self, frames):
+        """
+        Aplica data augmentation a nivel de video completo
+        
+        Parameters:
+        -----------
+        frames : torch.Tensor
+            Tensor de shape (C, T, H, W)
+            
+        Returns:
+        --------
+        frames : torch.Tensor
+            Tensor con augmentación aplicada
+        """
+        # frames shape: (C, T, H, W) = (3, 8, 112, 112)
+        
+        # Random horizontal flip (50% probability)
+        if torch.rand(1) < 0.5:
+            frames = torch.flip(frames, dims=[3])  # Flip width dimension
+        
+        # Random brightness/contrast adjustment
+        if torch.rand(1) < 0.3:  # 30% probability
+            brightness_factor = torch.rand(1) * 0.4 + 0.8  # 0.8 to 1.2
+            frames = torch.clamp(frames * brightness_factor, 0, 1)
+        
+        # Random temporal jitter (shuffle frame order slightly)
+        if torch.rand(1) < 0.2:  # 20% probability
+            # Shuffle frames within a small window
+            perm = torch.randperm(frames.shape[1])
+            frames = frames[:, perm, :, :]
+        
+        return frames
         """
         Obtiene el nombre de la clase dado su índice
         """
