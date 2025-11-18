@@ -36,7 +36,7 @@ def validar_paralelismo():
         print("💻 MODO CPU:")
         cpu_count = multiprocessing.cpu_count()
         print(f"   Núcleos de CPU: {cpu_count}")
-        expected_workers = min(8, cpu_count // 2)
+        expected_workers = min(8, cpu_count)  # Ahora usa hasta 8 núcleos
         print(f"   Workers esperados: {expected_workers}")
 
     print("\n🔄 Creando DataLoaders con configuración automática...")

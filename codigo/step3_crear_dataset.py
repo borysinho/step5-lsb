@@ -253,11 +253,11 @@ def crear_dataloaders(
         pin_memory = True
         print(f"🚀 Configuración GPU detectada - Usando {num_workers} workers")
     else:
-        # Para CPU: usar más workers para paralelismo
+        # Para CPU: usar más workers para paralelismo (ahora 8 núcleos)
         import multiprocessing
-        num_workers = min(8, multiprocessing.cpu_count() // 2)
+        num_workers = min(8, multiprocessing.cpu_count())  # Usar hasta 8 núcleos
         pin_memory = False
-        print(f"💻 Configuración CPU detectada - Usando {num_workers} workers para paralelismo")
+        print(f"💻 Configuración CPU detectada - Usando {num_workers} workers para paralelismo máximo")
     
     print(f"   Device: {device}")
     print(f"   Num workers: {num_workers}")
